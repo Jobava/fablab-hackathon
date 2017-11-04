@@ -1,0 +1,8 @@
+.ropeproject
+*.pyc
+*.swp
+~$
+*.vtt
+*.avi
+*.mkv
+venv/
