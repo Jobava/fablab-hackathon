@@ -25,10 +25,11 @@ def get_captions(file_name):
 def get_next_good_captions(captions, warn_time, current_time):
     good_section=[]
     for caption in captions:
+        start_time = caption['start_time']
         if start_time <= current_time+warn_time:
             if caption['is_bad']==False:
                 good_section.append(caption)
             else:
                 break
     return good_section
-    
+

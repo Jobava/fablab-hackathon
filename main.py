@@ -1,7 +1,8 @@
 import time
+import math
 
 from cc import write_caption_file
-from ccparser import get_captions
+from ccparser import get_captions, get_next_good_captions
 from selenium import webdriver
 
 
@@ -47,12 +48,25 @@ def ask_question(driver):
 
 def get_captions_for_video(video_id):
     write_caption_file(video_id, 'out')
-    pass
+    return get_captions('trump.srt')
 
 
 def get_current_video(driver):
     p = driver.execute_script("return player.getPlaylistIndex()")
     return driver.execute_script("return player.getCurrentTime()")
+
+
+def get_next_good_timestamp(captions, current_time):
+    for caption in captions:
+        if caption['start_time'] >= current_time and \
+                caption['is_bad'] == False:
+            return caption['start_time']
+    return None
+
+
+def get_video_end(driver):
+    return math.floor(driver.execute_script("return player.getDuration()"))
+
 
 def execute_ticks(driver, playlist):
     # playlist is a dict from video IDs to caption lists
@@ -61,11 +75,21 @@ def execute_ticks(driver, playlist):
         time.sleep(0.5)
         if is_overlay_on(driver):
             continue
-        current_video =
         current_time = get_current_time(driver)
-        next_good_captions = get_next_good_captions(current_time=current_time,captions=playlist['B9EV_h7LIuQ'], warn_time=CONFIGS['warn_time'])
-        if is_bad_time(current_time, captions):
-            bad_time = True
+        captions = playlist['M_D4i3CLNqU']
+        if get_answer_text(driver) == 'skip':
+            next_good_timestamp = get_next_good_timestamp(
+                captions, current_time)
+            if next_good_timestamp is None:
+                end_timestamp = get_video_end(driver)
+                seek_to(driver, end_timestamp)
+            seek_to(driver, next_good_timestamp)
+        # current_video =
+        next_good_captions = get_next_good_captions(
+            current_time=current_time,
+            captions=playlist['M_D4i3CLNqU'],
+            warn_time=CONFIGS['warn_time'])
+        if not next_good_captions:
             ask_question(driver)
 
 
@@ -74,4 +98,5 @@ if __name__ == '__main__':
     playlist = driver.execute_script("return playlist")
     # convert the playlist list into a dict
     playlist = {p: get_captions_for_video(p) for p in playlist}
+    seek_to(driver, 80)
     execute_ticks(driver, playlist)

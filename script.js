@@ -1,7 +1,10 @@
 var player,
     time_update_interval = 0;
 
-var playlist = ['B9EV_h7LIuQ', 'ylBb1IRda-g']  // this array will be populated from python
+// var playlist = ['B9EV_h7LIuQ', 'ylBb1IRda-g']  // this array will be populated from python
+
+//var playlist = ['B9EV_h7LIuQ']
+var playlist = ['M_D4i3CLNqU']
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('video-placeholder', {
@@ -10,7 +13,9 @@ function onYouTubeIframeAPIReady() {
         videoId: playlist[0],
         playerVars: {
             color: 'white',
-            playlist: playlist.slice(1).join(','),
+            // playlist: playlist.slice(1).join(','),
+	    // playlist: 'B9EV_h7LIuQ',
+	    // playlist: 'M_D4i3CLNqU',
 	    cc_load_policy: 1
         },
         events: {
