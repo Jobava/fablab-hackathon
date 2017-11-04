@@ -1,9 +1,9 @@
 import time
 
+from cc import write_caption_file
+from ccparser import get_captions
 from selenium import webdriver
-driver = webdriver.Chrome()
 
-driver.get("http://localhost:8080/index.html")
 
 CONFIGS = {
     'bad_words': ['trump', 'iphone'],
@@ -15,22 +15,6 @@ def launch_browser():
     driver = webdriver.Chrome()
     driver.get("http://localhost:8080/index.html")
     return driver
-
-
-def is_bad_time():
-    pass
-
-
-def ask_user(skip=False, blur=False, play=True):
-    pass
-
-
-def skip():
-    pass
-
-
-def blur():
-    pass
 
 
 def play_video(driver):
@@ -50,7 +34,7 @@ def get_answer_text(driver):
 
 
 def is_overlay_on(driver):
-    driver.execute_script("return is_overlay_on()")
+    return driver.execute_script("return is_overlay_on()")
 
 
 def get_current_time(driver):
@@ -61,12 +45,33 @@ def ask_question(driver):
     driver.execute_script("hide_video()")
 
 
-def execute_ticks(captions):
-    driver = launch_browser()
+def get_captions_for_video(video_id):
+    write_caption_file(video_id, 'out')
+    pass
+
+
+def get_current_video(driver):
+    p = driver.execute_script("return player.getPlaylistIndex()")
+    return driver.execute_script("return player.getCurrentTime()")
+
+def execute_ticks(driver, playlist):
+    # playlist is a dict from video IDs to caption lists
+    bad_time = False
     while True:
         time.sleep(0.5)
         if is_overlay_on(driver):
             continue
+        current_video =
         current_time = get_current_time(driver)
+        next_good_captions = get_next_good_captions(current_time=current_time,captions=playlist['B9EV_h7LIuQ'], warn_time=CONFIGS['warn_time'])
         if is_bad_time(current_time, captions):
+            bad_time = True
             ask_question(driver)
+
+
+if __name__ == '__main__':
+    driver = launch_browser()
+    playlist = driver.execute_script("return playlist")
+    # convert the playlist list into a dict
+    playlist = {p: get_captions_for_video(p) for p in playlist}
+    execute_ticks(driver, playlist)

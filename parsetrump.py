@@ -1,8 +1,11 @@
 import re
+
+
 def srt_time_to_seconds(time):
     split_time=time.split(',')
     major, minor = (split_time[0].split(':'), split_time[1])
     return int(major[0])*1440 + int(major[1])*60 + int(major[2]) + float(minor)/1000
+
 
 def srt_to_dict(srtText):
     subs=[]

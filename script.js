@@ -1,14 +1,16 @@
 var player,
     time_update_interval = 0;
 
+var playlist = ['B9EV_h7LIuQ', 'ylBb1IRda-g']  // this array will be populated from python
+
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('video-placeholder', {
         width: 600,
         height: 400,
-        videoId: 'WxlB1URFlEU',
+        videoId: playlist[0],
         playerVars: {
             color: 'white',
-            playlist: 'pf1t7cs9dkc',
+            playlist: playlist.slice(1).join(','),
 	    cc_load_policy: 1
         },
         events: {
